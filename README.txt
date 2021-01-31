@@ -32,3 +32,6 @@ params(:,4) - QRS duration
 params(:,5) - QT interval
 mBeatWf - mean ECG waveforms for each sweep 
 Quality - sweep quality
+
+https://zenodo.org/badge/latestdoi/316514603
+
