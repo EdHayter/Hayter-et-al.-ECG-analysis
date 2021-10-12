@@ -39,7 +39,7 @@ while i<length(val)-dp(2)
     end
     if i<length(val)-dp(2) %beat detected
         while val(i)<val(i+1) && i<length(val)-dp(2)
-            i=i+1;
+            i=i+1;  
         end
         if val(i)>val(i-1) %valid peak detected
            b=val(i-dp(1):i+dp(2)); %beat wavform
@@ -183,18 +183,9 @@ if sum(idx)>33 % at least 200 bpm
 else
     mibi=[];
     sdibi=[];
-    if nargin==6
-        xlabel('Time (s)');
-        ylabel('Amplitude (V)');
-        title(['Mean IBI:  ', num2str(mibi), '  S.D. IBI: ', num2str(sdibi)]);
-    %    saveas(h,['F',num2str(ctr),'.fig'],'fig')
-    end
     beatwf=[];
     Q=[];
     Diag=[];
     Oparams=[];
-%     if exist('h')==1
-%         close(h)
-%     end
 end
 

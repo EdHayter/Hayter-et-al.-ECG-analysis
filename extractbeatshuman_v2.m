@@ -236,19 +236,10 @@ else
     sdibi=[];
     bt=[];
     params=[];
-    if nargin==6
-        xlabel('Time (s)');
-        ylabel('Amplitude (V)');
-        title(['Mean IBI:  ', num2str(mibi), '  S.D. IBI: ', num2str(sdibi)]);
- %       saveas(h,['F',num2str(ctr),'.fig'],'fig')
-    end
     beatwf=[];
     Q=[];
     Diag=[];
     Oparams=[];
-   % if exist('h')==1
-   %     close(h)
-   % end
 end
 
 

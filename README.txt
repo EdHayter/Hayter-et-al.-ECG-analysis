@@ -12,14 +12,17 @@ This will produce a figure containing extracted ECG parameters from ~1hr of huma
 
 Run time approx. 10s
 
+by default, Run_for_summary will show human data. 
+To view mouse example data change line 9 of Run_for_summary from 'human' to 'mouse' and run again. 
+
 To run with your own data:
 Import raw data & timestamps into MATLAB into row vectors named 'data' and 'timestamps' respectively. 
+create a variable species = 'mouse' or species = 'human'. 
 then run the following:
 
-[DN, mIBI, sdIBI, params, mBeatWf, Criteria, Quality, Diagnostic,points]=processECGexp_v2(data, timestamps);
+[DN, mIBI, sdIBI, params, mBeatWf, Criteria, Quality, Diagnostic,points]=processECGexp_v2(data, timestamps, species);
 
-
-Sampling rate may need to be altered on line 37 of processECGexp_v2. 
+Sampling rate 'Fs' and beat window 'dp' (the window around each R peak to search) can be adjusted in lines 17-21 of processECGexp_v2 if required. 
 
 Main outputs:
 mIBI - mean RR interval across each sweep
@@ -32,17 +35,11 @@ params(:,5) - QT interval
 mBeatWf - mean ECG waveforms for each sweep 
 Quality - sweep quality
 
-In order to use this code for mouse ECG, replace line 39 of processECGexp_v2 (extractbeatshuman_v2) with the following:
+On lines 50 & 52 of processECGexp_v2, the final argument in the extractbeats___ function can be adjusted from 0 to 1 to produce diagnostic plots. 
+Only use this will small amounts of data as a new plot will be produced for each 10s sweep.
 
-[mibi, sdibi, beats, Q, Diag, Oparams, t]=extractbeatsmouse(val,ts,threshold, dp,0);
 
-The final input argument (0) can be changed to '1' to produce diagnostic plots - only use this will small amounts of data as a new plot will be produced for each 10s sweep.
-
-You will also need to adjust Fs on line 37, and 'dp' on line 16, which selects the window around each R peak to search. [60 60] is a good place to start for 1000Hz recording.
-
-Mouse example data.mat contains sweeps of example mouse ECG. 10s sweeps were collected every 5 minutes and stitched together. 
-
-Finally, Quality control can be adjusted on lines 17-22. It's currently set to exclude very little for ease of use. 
+Finally, Quality control can be adjusted on lines 26-31. It's currently set to exclude very little for ease of use. 
 
 
 

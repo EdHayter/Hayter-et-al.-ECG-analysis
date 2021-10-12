@@ -1,4 +1,4 @@
-function [DN, mIBI, sdIBI, params, mBeatWf, Criteria, Quality, Diagnostic,points]=processECGexp_v2(data, timestamps)
+function [DN, mIBI, sdIBI, params, mBeatWf, Criteria, Quality, Diagnostic,points]=processECGexp_v2(data, timestamps, species)
 %{
 process a series of 10s ECG sweep data to extract beats and basic parameters
 Main outputs:
@@ -13,7 +13,16 @@ mBeatWf - mean ECG waveforms for each sweep
 Quality - sweep quality
 %}
 msg=[];
-dp=[80 120]; %datapoints for wf
+if strcmp(species, 'mouse')
+    dp = [60 60]; %datapoints for wf
+    Fs = 1000;
+elseif strcmp(species,'human')
+    dp = [80 120];
+    Fs = 256; 
+else
+    error('Please specify ''mouse'' or ''human''.')
+end
+
 Criteria(:,1)=[0.66 1]; %quality threshold
 Criteria(:,2)=[-1 -1]; %mean interbeat interval ('RR')
 Criteria(:,3)=[-1 -1]; %SD interbeat interval
@@ -28,15 +37,20 @@ Quality=[];
 Diagnostic=[];
 params=[];
 c=0;
+data = data(:)';
 
 for sctr=1:length(data)/10000
     try
         temporary_ts = timestamps((sctr-1)*10000+1:sctr*10000)';
         dn = temporary_ts(1);
         val = data((sctr-1)*10000+1:sctr*10000)';
-        ts = (1:10000)'/256; %Fs
+        ts = (1:10000)'/Fs;
         threshold = [prctile(val,98),5];
-        [mibi, sdibi, beats, Q, Diag, Oparams, ~, ~, ~,t]=extractbeatshuman_v2(val,ts,threshold, dp,0);
+        if strcmp(species, 'mouse')
+            [mibi, sdibi, beats, Q, Diag, Oparams, t]=extractbeatsmouse(val,ts,threshold, dp,0);
+        else
+            [mibi, sdibi, beats, Q, Diag, Oparams, ~, ~, ~,t]=extractbeatshuman_v2(val,ts,threshold, dp,0);
+        end
         if isempty(mibi)==0
             DN(sctr) = dn;
             mIBI(sctr)=mibi;
@@ -67,9 +81,7 @@ end
 
 fprintf('\n %i Files skipped. \n',sum(isnan(mIBI)))
 
-
 idx=checkcriteria(Criteria,Quality,mIBI,sdIBI,params);
-disp([num2str(sum(idx==0)),' Files Excluded from average plots due to failing inclusion criteria']);
 
 end
 
